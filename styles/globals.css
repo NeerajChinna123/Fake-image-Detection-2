@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.carousel .control-dots {
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    right:0 !important;
+    padding: 0;
+    text-align: center;
+    width: 20%!important;
+    z-index: 1;
+}
