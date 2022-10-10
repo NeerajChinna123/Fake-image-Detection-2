@@ -13,3 +13,5 @@
     width: 20%!important;
     z-index: 1;
 }
+
+* { -webkit-tap-highlight-color: rgba(0,0,0,0); }

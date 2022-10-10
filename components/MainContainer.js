@@ -78,7 +78,7 @@ const MainContainer = () => {
       className="flex w-full items-center pt-20 pb-20 justify-center"
     >
       <div className="mx-auto flex flex-col items-center max-w-7xl">
-        <div className="font-ubuntu italic mb-10 font-semibold text-[6rem]">
+        <div className="font-ubuntu mb-10 font-semibold text-[6.3rem]">
           <TypeWriter
             options={{
               delay: 25,
@@ -93,11 +93,6 @@ const MainContainer = () => {
           whileInView={scaleVariants5.whileInView}
           className="ml-9"
         >
-          <div className="mb-6">
-            <p className="font-ubuntu text-2xl font-semibold tracking-wide underline ">
-              Opening page
-            </p>
-          </div>
           <div>
             <p className="tracking-wide w-[50rem] text-gray-800 text-lg lg:leading-8">
               In recent years, methods based on Artificial Intelligence (AI)
@@ -117,13 +112,10 @@ const MainContainer = () => {
           </div>
           <div className="mt-6">
             <p className="tracking-wide w-[50rem] text-gray-800 text-lg lg:leading-8">
-              In recent years, methods based on Artificial Intelligence (AI)
-              have been increasingly employed to assist human radiologists in
-              diagnosing patient images for pathologies, such as cancerous
-              tumors or cardiac deficiencies. In this study we look into images
-              obtained through medical scanning via X-ray Computed Tomography
-              which produces cross sectional images of the body’s interior, such
-              as the one shown below.
+            Just like human radiologists, AI-based methods also require training by letting it “see” a
+great diversity of human images and pathologies. And in order to make the AI as robust
+and effective as possible, an abundance of training images is needed -- the more
+images the better.
             </p>
           </div>
           <div className="mt-5">
