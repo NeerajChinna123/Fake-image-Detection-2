@@ -7,7 +7,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex bg-gray-100 min-h-screen flex-col items-center justify-center">
       <Head>
-        <title>Fake Image Detection</title>
+        <title>Visual Turing Test</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainContainer />
