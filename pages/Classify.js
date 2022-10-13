@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import IMAGES from '../Images/Images'
+import { useState } from 'react'
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import {ChevronRightIcon, ChevronLeftIcon ,PaperAirplaneIcon } from "@heroicons/react/solid";
@@ -8,8 +9,11 @@ import { motion } from "framer-motion";
 import Question from '../components/Question';
 
 const Classify = () => {
-
   
+const [currentIt, setCurrentIt] =useState();
+
+const [totalIm, setTotalIm] =useState();
+
  const images = [{ src: "../Images", alt: "Your description here 1" }];
   const arrowStyles = {
     position: "absolute",
@@ -29,11 +33,14 @@ const Classify = () => {
   return (
     <div className="flex flex-col  bg-gray-100 min-h-screen lg:w-full lg:justify-center">
       <div className="mx-auto w-full h-[48rem] mt-10 flex justify-center max-w-4xl">
+        
         <Carousel
          className="flex"
-         statusFormatter={(currentItem,total) => (
-           <div className="absolute font-sans group top-[36rem] right-[23.5rem] w-[5rem] text-[1rem] text-darkBg">{currentItem} / {total}</div>
-         )}
+         statusFormatter={(currentItem,total) => {
+          setCurrentIt(currentItem)
+          setTotalIm(total)
+          //</div> <div className="absolute font-sans group top-[36rem] right-[26.5rem] w-[5rem] text-[1rem] text-darkBg">{currentIt} / {totalIm} {setCurrentIt(currentItem)} {setTotalIm(total)}  </div>
+          }}
         renderArrowPrev={(clickHandler, hasPrev, labelPrev) => (
           <motion.div
           className="absolute group top-[37rem] left-[10rem] cursor-pointer hidden"
@@ -45,9 +52,6 @@ const Classify = () => {
           </motion.div>
         )}
         renderArrowNext={(clickHandler, hasNext, labelNext) => (
-
-
-
           <motion.div
           className="absolute group top-[39rem] left-[9rem] ml-60"
           whileTap={{ scale: 0.95 }}  
@@ -93,13 +97,20 @@ const Classify = () => {
             </div>
           ))}
         </Carousel>
+        <div className="absolute bottom-[-20rem]">
+        <div className="relative left-[30rem] bottom-[20rem] h-[30rem] w-6 bg-gray-200 rounded-full dark:bg-gray-700">
+        <div className={`w-6 h-${14} bottom-0 absolute bg-blue-600 rounded-full dark:bg-blue-500`}></div>
+        </div>
+      </div>
       </div>
       {/* <div className="border-r-2 bg-gray-500 w-16 h-16">
         <p> FORM SECTION</p>
       </div> */}
       <div className="mx-auto w-full flex justify-center max-w-4xl">
         <Question />
+      
       </div>
+      
     </div>
   )
 }
