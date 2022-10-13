@@ -5,6 +5,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from 'react-responsive-carousel';
 import {ChevronRightIcon, ChevronLeftIcon ,PaperAirplaneIcon } from "@heroicons/react/solid";
 import { motion } from "framer-motion";
+import Question from '../components/Question';
 
 const Classify = () => {
 
@@ -26,8 +27,8 @@ const Classify = () => {
     
   };
   return (
-    <div className="flex  bg-gray-100 min-h-screen lg:w-full lg:justify-center">
-      <div className="mx-auto w-full h-[54rem] mt-10 flex justify-center max-w-4xl">
+    <div className="flex flex-col  bg-gray-100 min-h-screen lg:w-full lg:justify-center">
+      <div className="mx-auto w-full h-[48rem] mt-10 flex justify-center max-w-4xl">
         <Carousel
          className="flex"
          statusFormatter={(currentItem,total) => (
@@ -52,15 +53,18 @@ const Classify = () => {
           whileTap={{ scale: 0.95 }}  
            
           >
-            <motion.div
+            <motion.a
+            href="#Question"
             onClick={clickHandler}
-            className="group cursor-pointer rounded-[0.2rem] bg-gray-800 font-ubuntu text-lg font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out  lg:hover:bg-blue-400 lg:hover:text-darkBgLight"
+            className="group cursor-pointer "
           >
+           <motion.div className="rounded-[0.2rem] bg-gray-800 font-ubuntu text-lg font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out  lg:hover:bg-gray-400 lg:hover:text-darkBgLight"> 
            <div className="flex h-16 w-44 space-x-4 justify-center items-center transition-transform duration-500 ease-in-out group-hover:scale-105">
             <p className="tracking-[0.2rem] text-[1.5rem]">Next</p>
             <PaperAirplaneIcon className="h-7 w-7 animate-pulse rotate-90 hover:text-darkBgLight" />
           </div>
           </motion.div>
+          </motion.a>
           </motion.div>
        )}
         
@@ -93,6 +97,9 @@ const Classify = () => {
       {/* <div className="border-r-2 bg-gray-500 w-16 h-16">
         <p> FORM SECTION</p>
       </div> */}
+      <div className="mx-auto w-full flex justify-center max-w-4xl">
+        <Question />
+      </div>
     </div>
   )
 }
