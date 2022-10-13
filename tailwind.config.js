@@ -11,7 +11,10 @@ module.exports = {
         'darkBgLight':'#2a2e35',
         'blagBg':'#0D0D0D',
         'bgBlackBlur':'rgba(0,0,0,3)'
-      }
+      },
+      transitionProperty: {
+        height: 'height'
+    }
     },
   },
   plugins: [],
