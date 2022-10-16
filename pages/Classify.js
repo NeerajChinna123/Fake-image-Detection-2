@@ -202,15 +202,15 @@ const Classify = () => {
             <LogoutIcon className="h-7 w-7 animate-pulse hover:text-darkBgLight" />
           </motion.a>
 
-          <motion.button
+          <motion.a
             disabled={currentIt!=totalIm}
-            onClick
+            href="/Thanks"
             whileTap={{ scale: 0.9 }}
             className={ (currentIt!=totalIm)? "mt-8 flex cursor-not-allowed justify-center opacity-30 rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800 " : "mt-8 flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800  lg:hover:bg-green-400 lg:hover:text-darkBgLight" }
           >
             <p className="tracking-wider">Submit</p>
             <CheckCircleIcon className={(currentIt!=totalIm)?"h-7 w-7 animate-pulse ":"h-7 w-7 animate-pulse hover:text-darkBgLight "} />
-          </motion.button>
+          </motion.a>
         </motion.div>
     </div>
   );
