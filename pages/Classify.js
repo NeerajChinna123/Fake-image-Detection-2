@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import IMAGES from "../Images/Images";
+import { useRouter } from 'next/router'
 import { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
@@ -19,12 +20,13 @@ const Classify = () => {
   const [currentIt, setCurrentIt] = useState();
   const [navi, setNavi] = useState(false);
   const [totalIm, setTotalIm] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [selected, setSelected] = useState("");
   const [fakeSel, setFakeSel] = useState(false);
   const [checked, setChecked] = useState([]);
 
+  const router = useRouter()
 
   var hp =(currentIt/totalIm)*100
 
@@ -50,6 +52,23 @@ const Classify = () => {
       transition: { duration: 1 },
     },
   };
+  
+  if(fakeSel){
+    //router.push("#footer")
+   
+  // location.href = "#footer";
+  //  var elem = document.getElementById("footer");
+  //    elem.scrollIntoView();
+  delay(100).then(() => (location.href = "#footer"));
+  }
+
+  if(!fakeSel){
+   // router.push("#header")
+  //  var elem = document.getElementById("header");
+  //  elem.scrollIntoView();
+  // location.href = "#header";
+  delay(100).then(() => (location.href = "#header"));
+  }
 
   // function navigate() {
   //   setNavi(false)
@@ -57,6 +76,7 @@ const Classify = () => {
   // }
 
   // function testFun() {
+    
   //   setNavi(true)
   // }
 
@@ -69,14 +89,11 @@ const Classify = () => {
     setChecked([]);
     setFakeSel(false);
     !isLoading && setIsLoading(true);
-    setTimeout(function(){
-      window.location.href = '#Question';
-   }, 2000);
-    delay(3000).then(() => (setIsLoading(false)));
+    delay(1000).then(() => (setIsLoading(false)));
   } 
   return (
-    <div className="flex flex-col  bg-gray-100 min-h-screen lg:w-full lg:justify-center">
-      <div className="mx-auto w-full h-[48rem] mt-20 flex justify-center max-w-4xl">
+    <div id="header" className="flex flex-col bg-gray-100 min-h-screen lg:w-full lg:justify-center">
+      <div className="mx-auto relative h-[30rem] w-full mt-12 flex flex-col justify-center max-w-4xl">
         <Carousel
           className="flex"
           statusFormatter={(currentItem, total) => {
@@ -95,7 +112,7 @@ const Classify = () => {
           )}
           renderArrowNext={(clickHandler, hasNext, labelNext) => (
             <motion.div
-              className="absolute z-10 group top-[39rem] left-[8rem] ml-60"
+              className="z-50 group w-44 mt-[1rem] pb-2 ml-[22.5rem]"
               whileTap={{ scale: 0.95 }}
             >
               <motion.a
@@ -106,9 +123,9 @@ const Classify = () => {
                 }}
                 className="group cursor-pointer "
               >
-                <motion.div className="rounded-[0.2rem] bg-gray-800 font-ubuntu text-lg font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out  lg:hover:bg-gray-400 lg:hover:text-darkBgLight">
-                  <div className="flex h-16 w-44 space-x-4 justify-center items-center transition-transform duration-500 ease-in-out group-hover:scale-105">
-                    <p className=" tracking-[0.2rem] text-[1.5rem]">Next</p>
+                <motion.div className="rounded-[0.2rem] bg-gray-800 font-ubuntu text-md font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out  lg:hover:bg-gray-400 lg:hover:text-darkBgLight">
+                  <div className="flex h-14 w-32 ml-6 space-x-4 justify-center items-center transition-transform duration-500 ease-in-out group-hover:scale-105">
+                    <p className=" tracking-[0.2rem] text-[1.3rem]">Next</p>
                     <PaperAirplaneIcon className="h-7 w-7 animate-pulse rotate-90 hover:text-darkBgLight" />
                   </div>
                 </motion.div>
@@ -138,15 +155,15 @@ const Classify = () => {
           {IMAGES.map((image) => (
             <div>
               <img
-                className="h-[34rem] object-contain border-r-4"
+                className="h-[29rem] object-contain border-r-4"
                 id={image.id}
                 src={image.path}
               ></img>
             </div>
           ))}
         </Carousel>
-        <div className="absolute bottom-[-20rem]">
-          <div className="relative shadow-md left-[30rem] bottom-[20rem] h-[30rem] w-[3rem] bg-gray-300 rounded-full dark:bg-gray-700">
+      <div className="absolute top-[10.3rem]">
+          <div className="relative shadow-md left-[45rem] bottom-[11rem] h-[26.5rem] w-[3rem] bg-gray-300 rounded-full dark:bg-gray-700">
             <div
               style={{
                 height: `${hp}%`
@@ -163,13 +180,17 @@ const Classify = () => {
       {/* <div className="border-r-2 bg-gray-500 w-16 h-16">
         <p> FORM SECTION</p>
       </div> */}
-      <div className="mx-auto w-full flex justify-center max-w-4xl">
+      {/* <div className="w-full top-[33rem] left-[27rem] z-50 flex">
+        <Question load={isLoading} selectedSet={setSelected} fakeSelSet={setFakeSel} checkedSet={setChecked} selectedI={selected} checkedI={checked} fakeSelI={fakeSel} />
+      </div> */}
+      <div className="w-full mt-10 justify-center z-50 flex">
         <Question load={isLoading} selectedSet={setSelected} fakeSelSet={setFakeSel} checkedSet={setChecked} selectedI={selected} checkedI={checked} fakeSelI={fakeSel} />
       </div>
       <motion.div
+          id='footer'
           variants={scaleVariants5}
           whileInView={scaleVariants5.whileInView}
-          className="flex flex-row lg:space-x-14 lg:space-y-0 space-y-5 justify-center mt-16 mb-16"
+          className="flex flex-row lg:space-x-14 lg:space-y-0 space-y-5 justify-center pt-[2rem] mb-[3rem]"
         >
           <motion.a
             whileTap={{ scale: 0.9 }}
@@ -181,14 +202,15 @@ const Classify = () => {
             <LogoutIcon className="h-7 w-7 animate-pulse hover:text-darkBgLight" />
           </motion.a>
 
-          <motion.a
+          <motion.button
+            disabled={currentIt!=totalIm}
             onClick
             whileTap={{ scale: 0.9 }}
-            className="mt-8 flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 bg-gray-800 py-4 font-ubuntu text-lg font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out lg:px-8 lg:hover:bg-green-400 lg:hover:text-darkBgLight"
+            className={ (currentIt!=totalIm)? "mt-8 flex cursor-not-allowed justify-center opacity-30 rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800 " : "mt-8 flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800  lg:hover:bg-green-400 lg:hover:text-darkBgLight" }
           >
             <p className="tracking-wider">Submit</p>
-            <CheckCircleIcon className="h-7 w-7 animate-pulse hover:text-darkBgLight " />
-          </motion.a>
+            <CheckCircleIcon className={(currentIt!=totalIm)?"h-7 w-7 animate-pulse ":"h-7 w-7 animate-pulse hover:text-darkBgLight "} />
+          </motion.button>
         </motion.div>
     </div>
   );

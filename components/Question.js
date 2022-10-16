@@ -26,7 +26,7 @@ const Question = ({ load, selectedSet, fakeSelSet, checkedSet, selectedI, checke
       {load ? (
         <motion.div
           id="Question"
-          className="flex overflow-hidden h-[128px] shadow-md w-[34rem] p-6 bg-white-700 border-4 rounded-lg flex-col "
+          className="flex overflow-hidden h-[128px] shadow-md w-[34rem] p-4 bg-white-700 border-4 rounded-lg flex-col "
         >
           <div role="status" className="animate-pulse">
             <div className="h-6 bg-gray-300 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
