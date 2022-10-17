@@ -310,7 +310,7 @@ const Classify = (props) => {
 
         <motion.button
           disabled={currentIt != totalIm}
-          onClick={currentIt == totalIm && handleSubmit}
+          onClick={currentIt == totalIm ? handleSubmit :undefined}
           // href={currentIt != totalIm ? "#" : "/Thanks"}
           whileTap={{ scale: 0.9 }}
           className={

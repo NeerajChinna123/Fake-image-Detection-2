@@ -226,7 +226,7 @@ prematurely.
           </motion.a>
 
           <motion.a
-            href="/Classify"
+            href="/Classify#header"
             whileTap={{ scale: 0.9 }}
             className="mt-8 flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 bg-gray-800 py-4 font-ubuntu text-lg font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out lg:px-8 lg:hover:bg-green-400 lg:hover:text-darkBgLight"
           >
