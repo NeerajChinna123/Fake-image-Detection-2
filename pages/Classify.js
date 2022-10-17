@@ -18,8 +18,14 @@ import Skeleton from "react-loading-skeleton";
 import { useRecoilState } from "recoil";
 import { resultState } from "../atoms/result";
 import { finalSurvState } from "../atoms/FinalSurvey";
+import { ctImagesState } from "../atoms/ctImages";
+import { sanityClient, urlFor } from "../sanity";
+import submitSurvey from "./api/submitSurvey";
 
-const Classify = () => {
+const Classify = (props) => {
+  let imagesArray = props?.ctImages[0].ctImagesGallery;
+
+  const [success, setSuccess] = useState(false);
   const [currentIt, setCurrentIt] = useState();
   const [navi, setNavi] = useState(false);
   const [totalIm, setTotalIm] = useState();
@@ -30,7 +36,7 @@ const Classify = () => {
   const [fakeSel, setFakeSel] = useState(false);
   const [checked, setChecked] = useState([]);
 
-  const [images, setImages] = useState(IMAGES);
+  const [images, setImages] = useState(imagesArray);
 
   const [image, setImage] = useState(IMAGES[0].path);
 
@@ -38,8 +44,11 @@ const Classify = () => {
 
   const [finalRes, setFinalRes] = useRecoilState(finalSurvState);
 
+  const [ctImage, setCtImage] = useRecoilState(ctImagesState);
 
   var hp = (currentIt / totalIm) * 100;
+
+  console.log("imagesDataLi ", ctImage);
 
   //const images = [{ src: "../Images", alt: "Your description here 1" }];
   const arrowStyles = {
@@ -78,7 +87,7 @@ const Classify = () => {
     //  var elem = document.getElementById("header");
     //  elem.scrollIntoView();
     // location.href = "#header";
-    delay(100).then(() => (location.href = "#header"));
+    delay(110).then(() => (location.href = "#header"));
   }
 
   // function navigate() {
@@ -95,6 +104,10 @@ const Classify = () => {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
+  if(success){
+    delay(100).then(() => (location.href = "/Thanks"));
+  }
+
   function Loader() {
     setSelected("");
     setChecked([]);
@@ -104,49 +117,60 @@ const Classify = () => {
   }
 
   function handleChange(selectedIndex) {
-    
-    console.log('handleSubmit')
-    var newImageArray = images.filter(function (el) {
-      return el.id == selectedIndex;
+    console.log("handleSubmit");
+    var newImageArray = images.filter(function (el, index) {
+      return index + 1 == selectedIndex;
     });
 
-    let imP = newImageArray[0].path;
-    let imI = selectedIndex
+    let imP = newImageArray[0].asset;
+    let imI = selectedIndex;
     setImage(imP);
     setId(imI);
 
     let reJs = {
-      id: imI,
-      image: imP,
+      key: imI,
+      image: {
+        asset: imP,
+      },
       choice: selected,
       reason1: checked[0] ? checked[0] : "",
       reason2: checked.length > 1 ? checked[1] : "",
     };
 
-    let newList = [...resSt,reJs];
+    // let newList = [...resSt,reJs];
 
-    
-    setResultSt(newList);
+    setResultSt((resSt) => [...resSt, reJs]);
   }
 
-
   function handleSubmit() {
-
     handleChange(totalIm);
-    console.log('handleSubm');
-    let date = Date.now();
-
+    let date = new Date();
     var finalJson = {
-      Date : date, FinalSurvey : resSt
-    }
+      Date: date,
+      FinalSurvey: resSt,
+    };
 
     setFinalRes(finalJson);
+    submitSurvey(finalJson);
+  }
 
+  function submitSurvey(payload) {
+
+    fetch("/api/submitSurvey", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    })
+      .then(() => {
+        setSuccess(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   console.log("Final Array ", resSt);
 
-  console.log("Final Array ", finalRes);
+  //console.log("Final Array ", finalRes);
 
   return (
     <div
@@ -223,8 +247,8 @@ const Classify = () => {
             <div>
               <img
                 className="h-[29rem] object-contain border-r-4"
-                id={image.id}
-                src={image.path}
+                id={image._id}
+                src={urlFor(image.asset).url()}
               ></img>
             </div>
           ))}
@@ -287,7 +311,7 @@ const Classify = () => {
         <motion.button
           disabled={currentIt != totalIm}
           onClick={currentIt == totalIm && handleSubmit}
-         // href={currentIt != totalIm ? "#" : "/Thanks"}
+          // href={currentIt != totalIm ? "#" : "/Thanks"}
           whileTap={{ scale: 0.9 }}
           className={
             currentIt != totalIm
@@ -307,6 +331,22 @@ const Classify = () => {
       </motion.div>
     </div>
   );
+};
+
+export const getServerSideProps = async () => {
+  const ctImageQuery = `*[_type=="images"]{
+    _id,
+    _createdAt,
+    ctImagesGallery
+  }`;
+
+  const ctImageData = await sanityClient.fetch(ctImageQuery);
+
+  return {
+    props: {
+      ctImages: ctImageData,
+    },
+  };
 };
 
 export default Classify;

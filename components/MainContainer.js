@@ -141,8 +141,7 @@ images the better.
               Real and simulated images will be presented in random order, and
               you will be able to opt out at any time. No information will be
               collected that can link you to the responses you gave or that you
-              participated in this study. By entering the study it is assumed
-              that you provided consent.”
+              participated in this study.
             </p>
           </div>
         </motion.div>
