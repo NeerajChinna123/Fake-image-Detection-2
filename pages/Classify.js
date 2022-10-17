@@ -1,12 +1,12 @@
 import Head from "next/head";
 import Image from "next/image";
 import IMAGES from "../Images/Images";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import { ArrowRightIcon,ChevronDoubleRightIcon } from "@heroicons/react/solid";
-import { LogoutIcon,CheckCircleIcon } from "@heroicons/react/outline";
+import { ArrowRightIcon, ChevronDoubleRightIcon } from "@heroicons/react/solid";
+import { LogoutIcon, CheckCircleIcon } from "@heroicons/react/outline";
 import {
   ChevronRightIcon,
   ChevronLeftIcon,
@@ -15,22 +15,33 @@ import {
 import { motion } from "framer-motion";
 import Question from "../components/Question";
 import Skeleton from "react-loading-skeleton";
+import { useRecoilState } from "recoil";
+import { resultState } from "../atoms/result";
+import { finalSurvState } from "../atoms/FinalSurvey";
 
 const Classify = () => {
   const [currentIt, setCurrentIt] = useState();
   const [navi, setNavi] = useState(false);
   const [totalIm, setTotalIm] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [id, setId] = useState("");
 
   const [selected, setSelected] = useState("");
   const [fakeSel, setFakeSel] = useState(false);
   const [checked, setChecked] = useState([]);
 
-  const router = useRouter()
+  const [images, setImages] = useState(IMAGES);
 
-  var hp =(currentIt/totalIm)*100
+  const [image, setImage] = useState(IMAGES[0].path);
 
-  const images = [{ src: "../Images", alt: "Your description here 1" }];
+  const [resSt, setResultSt] = useRecoilState(resultState);
+
+  const [finalRes, setFinalRes] = useRecoilState(finalSurvState);
+
+
+  var hp = (currentIt / totalIm) * 100;
+
+  //const images = [{ src: "../Images", alt: "Your description here 1" }];
   const arrowStyles = {
     position: "absolute",
     top: ".7em",
@@ -52,22 +63,22 @@ const Classify = () => {
       transition: { duration: 1 },
     },
   };
-  
-  if(fakeSel){
+
+  if (fakeSel) {
     //router.push("#footer")
-   
-  // location.href = "#footer";
-  //  var elem = document.getElementById("footer");
-  //    elem.scrollIntoView();
-  delay(100).then(() => (location.href = "#footer"));
+
+    // location.href = "#footer";
+    //  var elem = document.getElementById("footer");
+    //    elem.scrollIntoView();
+    delay(100).then(() => (location.href = "#footer"));
   }
 
-  if(!fakeSel){
-   // router.push("#header")
-  //  var elem = document.getElementById("header");
-  //  elem.scrollIntoView();
-  // location.href = "#header";
-  delay(100).then(() => (location.href = "#header"));
+  if (!fakeSel) {
+    // router.push("#header")
+    //  var elem = document.getElementById("header");
+    //  elem.scrollIntoView();
+    // location.href = "#header";
+    delay(100).then(() => (location.href = "#header"));
   }
 
   // function navigate() {
@@ -76,26 +87,76 @@ const Classify = () => {
   // }
 
   // function testFun() {
-    
+
   //   setNavi(true)
   // }
 
   function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
+    return new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  function Loader(){
-    setSelected('');
+  function Loader() {
+    setSelected("");
     setChecked([]);
     setFakeSel(false);
     !isLoading && setIsLoading(true);
-    delay(1000).then(() => (setIsLoading(false)));
-  } 
+    delay(500).then(() => setIsLoading(false));
+  }
+
+  function handleChange(selectedIndex) {
+    
+    console.log('handleSubmit')
+    var newImageArray = images.filter(function (el) {
+      return el.id == selectedIndex;
+    });
+
+    let imP = newImageArray[0].path;
+    let imI = selectedIndex
+    setImage(imP);
+    setId(imI);
+
+    let reJs = {
+      id: imI,
+      image: imP,
+      choice: selected,
+      reason1: checked[0] ? checked[0] : "",
+      reason2: checked.length > 1 ? checked[1] : "",
+    };
+
+    let newList = [...resSt,reJs];
+
+    
+    setResultSt(newList);
+  }
+
+
+  function handleSubmit() {
+
+    handleChange(totalIm);
+    console.log('handleSubm');
+    let date = Date.now();
+
+    var finalJson = {
+      Date : date, FinalSurvey : resSt
+    }
+
+    setFinalRes(finalJson);
+
+  }
+
+  console.log("Final Array ", resSt);
+
+  console.log("Final Array ", finalRes);
+
   return (
-    <div id="header" className="flex flex-col bg-gray-100 min-h-screen lg:w-full lg:justify-center">
+    <div
+      id="header"
+      className="flex flex-col bg-gray-100 min-h-screen lg:w-full lg:justify-center"
+    >
       <div className="mx-auto relative h-[30rem] w-full mt-12 flex flex-col justify-center max-w-4xl">
         <Carousel
           className="flex"
+          onChange={handleChange}
           statusFormatter={(currentItem, total) => {
             setCurrentIt(currentItem);
             setTotalIm(total);
@@ -112,18 +173,24 @@ const Classify = () => {
           )}
           renderArrowNext={(clickHandler, hasNext, labelNext) => (
             <motion.div
-              className="z-50 group w-44 mt-[1rem] pb-2 ml-[22.5rem]"
+              className="z-50 group w-44 mt-[1rem] pb-2 ml-[22.5rem] "
               whileTap={{ scale: 0.95 }}
             >
               <motion.a
                 onClick={() => {
                   clickHandler();
                   Loader();
-                //  navigate();
+                  //  navigate();
                 }}
-                className="group cursor-pointer "
+                className={"group cursor-pointer "}
               >
-                <motion.div className="rounded-[0.2rem] bg-gray-800 font-ubuntu text-md font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out  lg:hover:bg-gray-400 lg:hover:text-darkBgLight">
+                <motion.div
+                  className={
+                    currentIt == totalIm
+                      ? "hidden"
+                      : "rounded-[0.2rem] bg-gray-800 font-ubuntu text-md font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out  lg:hover:bg-gray-400 lg:hover:text-darkBgLight"
+                  }
+                >
                   <div className="flex h-14 w-32 ml-6 space-x-4 justify-center items-center transition-transform duration-500 ease-in-out group-hover:scale-105">
                     <p className=" tracking-[0.2rem] text-[1.3rem]">Next</p>
                     <PaperAirplaneIcon className="h-7 w-7 animate-pulse rotate-90 hover:text-darkBgLight" />
@@ -152,7 +219,7 @@ const Classify = () => {
           showIndicators={false}
           showThumbs={false}
         >
-          {IMAGES.map((image) => (
+          {images.map((image) => (
             <div>
               <img
                 className="h-[29rem] object-contain border-r-4"
@@ -162,18 +229,25 @@ const Classify = () => {
             </div>
           ))}
         </Carousel>
-      <div className="absolute top-[10.3rem]">
+        <div
+          className={
+            currentIt == totalIm
+              ? "absolute top-[12.3rem]"
+              : "absolute top-[10.3rem]"
+          }
+        >
           <div className="relative shadow-md left-[45rem] bottom-[11rem] h-[26.5rem] w-[3rem] bg-gray-300 rounded-full dark:bg-gray-700">
             <div
               style={{
-                height: `${hp}%`
+                height: `${hp}%`,
               }}
               className={`w-[3rem] transition-all duration-500 ease-in-out bottom-0 absolute bg-green-400 rounded-full dark:bg-green-500`}
-            >
-          </div>
-          <div className="top-[50%] absolute">
-            <p className="text-[0.7rem] font-semibold font-ubuntu  text-center w-[3rem]">{currentIt} / {totalIm}</p>
-            </div> 
+            ></div>
+            <div className="top-[50%] absolute">
+              <p className="text-[0.7rem] font-semibold font-ubuntu  text-center w-[3rem]">
+                {currentIt} / {totalIm}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -184,34 +258,53 @@ const Classify = () => {
         <Question load={isLoading} selectedSet={setSelected} fakeSelSet={setFakeSel} checkedSet={setChecked} selectedI={selected} checkedI={checked} fakeSelI={fakeSel} />
       </div> */}
       <div className="w-full mt-10 justify-center z-50 flex">
-        <Question load={isLoading} selectedSet={setSelected} fakeSelSet={setFakeSel} checkedSet={setChecked} selectedI={selected} checkedI={checked} fakeSelI={fakeSel} />
+        <Question
+          load={isLoading}
+          selectedSet={setSelected}
+          fakeSelSet={setFakeSel}
+          checkedSet={setChecked}
+          selectedI={selected}
+          checkedI={checked}
+          fakeSelI={fakeSel}
+        />
       </div>
       <motion.div
-          id='footer'
-          variants={scaleVariants5}
-          whileInView={scaleVariants5.whileInView}
-          className="flex flex-row lg:space-x-14 lg:space-y-0 space-y-5 justify-center pt-[2rem] mb-[3rem]"
+        id="footer"
+        variants={scaleVariants5}
+        whileInView={scaleVariants5.whileInView}
+        className="flex flex-row lg:space-x-14 lg:space-y-0 space-y-5 justify-center pt-[2rem] mb-[3rem]"
+      >
+        <motion.a
+          whileTap={{ scale: 0.9 }}
+          href="/"
+          //href={`${props.abouts[0].resume}?dl=`}
+          className="flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 bg-darkBgLight py-4 font-ubuntu text-lg font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out lg:px-10 lg:hover:bg-red-400 lg:hover:text-darkBgLight"
         >
-          <motion.a
-            whileTap={{ scale: 0.9 }}
-            href="/"
-            //href={`${props.abouts[0].resume}?dl=`}
-            className="flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 bg-darkBgLight py-4 font-ubuntu text-lg font-semibold text-white shadow-md shadow-gray-800 transition duration-500 ease-in-out lg:px-10 lg:hover:bg-red-400 lg:hover:text-darkBgLight"
-          >
-            <p className="tracking-wider">Leave</p>
-            <LogoutIcon className="h-7 w-7 animate-pulse hover:text-darkBgLight" />
-          </motion.a>
+          <p className="tracking-wider">Leave</p>
+          <LogoutIcon className="h-7 w-7 animate-pulse hover:text-darkBgLight" />
+        </motion.a>
 
-          <motion.a
-            disabled={currentIt!=totalIm}
-            href="/Thanks"
-            whileTap={{ scale: 0.9 }}
-            className={ (currentIt!=totalIm)? "mt-8 flex cursor-not-allowed justify-center opacity-30 rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800 " : "mt-8 flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800  lg:hover:bg-green-400 lg:hover:text-darkBgLight" }
-          >
-            <p className="tracking-wider">Submit</p>
-            <CheckCircleIcon className={(currentIt!=totalIm)?"h-7 w-7 animate-pulse ":"h-7 w-7 animate-pulse hover:text-darkBgLight "} />
-          </motion.a>
-        </motion.div>
+        <motion.button
+          disabled={currentIt != totalIm}
+          onClick={currentIt == totalIm && handleSubmit}
+         // href={currentIt != totalIm ? "#" : "/Thanks"}
+          whileTap={{ scale: 0.9 }}
+          className={
+            currentIt != totalIm
+              ? "mt-8 flex cursor-not-allowed justify-center opacity-30 rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800 "
+              : "mt-8 flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800  lg:hover:bg-green-400 lg:hover:text-darkBgLight"
+          }
+        >
+          <p className="tracking-wider">Submit</p>
+          <CheckCircleIcon
+            className={
+              currentIt != totalIm
+                ? "h-7 w-7 animate-pulse "
+                : "h-7 w-7 animate-pulse hover:text-darkBgLight "
+            }
+          />
+        </motion.button>
+      </motion.div>
     </div>
   );
 };

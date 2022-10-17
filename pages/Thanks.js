@@ -2,6 +2,8 @@ import { useState } from "react";
 import Confetti from "react-confetti";
 import { motion } from "framer-motion";
 import { HomeIcon } from "@heroicons/react/solid";
+import { finalSurvState } from "../atoms/FinalSurvey";
+import { useRecoilState } from "recoil";
 const scaleVariants1 = {
   whileInView: {
     transform: "scale(0)",
@@ -74,6 +76,8 @@ const Thanks = () => {
   const [rem, setRem] = useState(true);
 
   const [num, setNum] = useState(100);
+  
+  const [finalRes, setFinalRes] = useRecoilState(finalSurvState);
 
   function delay(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
@@ -83,7 +87,8 @@ const Thanks = () => {
   delay(100).then(() => setWidth(window?.innerHeight));
 
   delay(3000).then(() => setRem(false));
- 
+  
+  console.log("Final Json ", finalRes);
 
   return (
     <>
@@ -100,7 +105,7 @@ const Thanks = () => {
         transition={{ duration: 2 }} id="mainHeading" className="flex w-full min-h-screen">
         <div className="mx-auto flex  flex-col justify-center text-center items-center max-w-7xl">
           <div className="font-ubuntu font-semibold text-[4.3rem]">
-            Thanks for submitting the survey, your response has been recorded
+            Thanks for finishing the study
           </div>
 
         <motion.a

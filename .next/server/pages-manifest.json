@@ -3,5 +3,5 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/Classify": "pages/Classify.js",
-  "/Thanks": "pages/Thanks.js"
+  "/": "pages/index.js"
 }
