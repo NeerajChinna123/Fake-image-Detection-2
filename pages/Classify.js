@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import IMAGES from "../Images/Images";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import { ArrowRightIcon, ChevronDoubleRightIcon } from "@heroicons/react/solid";
@@ -73,22 +73,27 @@ const Classify = (props) => {
     },
   };
 
-  if (fakeSel) {
-    //router.push("#footer")
+  useEffect(() => {
+    if (fakeSel) {
+      //router.push("#footer")
+  
+      // location.href = "#footer";
+      //  var elem = document.getElementById("footer");
+      //    elem.scrollIntoView();
+     location.href = "#footer";
+    }
+  
+    if (!fakeSel) {
+      // router.push("#header")
+      //  var elem = document.getElementById("header");
+      //  elem.scrollIntoView();
+      // location.href = "#header";
+      location.href = "#header";
+    }
+  }, [fakeSel]);
 
-    // location.href = "#footer";
-    //  var elem = document.getElementById("footer");
-    //    elem.scrollIntoView();
-    delay(100).then(() => (location.href = "#footer"));
-  }
 
-  if (!fakeSel) {
-    // router.push("#header")
-    //  var elem = document.getElementById("header");
-    //  elem.scrollIntoView();
-    // location.href = "#header";
-    delay(110).then(() => (location.href = "#header"));
-  }
+
 
   // function navigate() {
   //   setNavi(false)
@@ -244,7 +249,7 @@ const Classify = (props) => {
           showThumbs={false}
         >
           {images.map((image) => (
-            <div>
+            <div key={image._id}>
               <img
                 className="h-[29rem] object-contain border-r-4"
                 id={image._id}

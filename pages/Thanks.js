@@ -83,8 +83,8 @@ const Thanks = () => {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  delay(100).then(() => setHeight(window?.innerWidth));
-  delay(100).then(() => setWidth(window?.innerHeight));
+  // delay(100).then(() => setHeight(window?.innerWidth));
+  // delay(100).then(() => setWidth(window?.innerHeight));
 
   delay(3000).then(() => setRem(false));
   
