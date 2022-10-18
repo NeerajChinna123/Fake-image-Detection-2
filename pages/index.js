@@ -5,8 +5,21 @@ import MainContainer from '../components/MainContainer'
 
 
 export default function Home() {
+
   
- 
+  
+  function submitSurvey(payload) {
+    fetch("/api/submitSurvey", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    })
+      .then(() => {
+        setSuccess(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   
 
   return (

@@ -25,6 +25,11 @@
       "static/chunks/main.js",
       "static/chunks/pages/Classify.js"
     ],
+    "/Loader": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Loader.js"
+    ],
     "/Thanks": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

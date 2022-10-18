@@ -20,7 +20,7 @@ export default async function submitSurvey(
 
   try {
     await client.create({
-      _type: 'responses',
+      _type: 'surveyResponses',
       Date,
       FinalSurvey
     })

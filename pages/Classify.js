@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import IMAGES from "../Images/Images";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import { ArrowRightIcon, ChevronDoubleRightIcon } from "@heroicons/react/solid";
@@ -15,7 +15,7 @@ import {
 import { motion } from "framer-motion";
 import Question from "../components/Question";
 import Skeleton from "react-loading-skeleton";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { resultState } from "../atoms/result";
 import { finalSurvState } from "../atoms/FinalSurvey";
 import { ctImagesState } from "../atoms/ctImages";
@@ -24,6 +24,8 @@ import submitSurvey from "./api/submitSurvey";
 
 const Classify = (props) => {
   let imagesArray = props?.ctImages[0].ctImagesGallery;
+
+  console.log("props : ", imagesArray);
 
   const [success, setSuccess] = useState(false);
   const [currentIt, setCurrentIt] = useState();
@@ -42,28 +44,27 @@ const Classify = (props) => {
 
   const [resSt, setResultSt] = useRecoilState(resultState);
 
-  const [finalRes, setFinalRes] = useRecoilState(finalSurvState);
+  
 
-  const [ctImage, setCtImage] = useRecoilState(ctImagesState);
+  const [callbackSetup, setCallbackSetup] = useState(false);
+
+  const [disable, setDisable] = useState(false);
+
+  const stateRef = useRef();
+  stateRef.current = resSt;
+
+  let setFinalRes = useSetRecoilState(finalSurvState);
+
+ 
+  // const [finalRes, setFinalRes] = useRecoilState(finalSurvState);
+
+  //  const [ctImage, setCtImage] = useRecoilState(ctImagesState);
+
+  // const [bHide, setBhide] = useState(true);
 
   var hp = (currentIt / totalIm) * 100;
 
-  console.log("imagesDataLi ", ctImage);
-
-  //const images = [{ src: "../Images", alt: "Your description here 1" }];
-  const arrowStyles = {
-    position: "absolute",
-    top: ".7em",
-    bottom: "auto",
-    padding: ".4em",
-    zIndex: 2,
-  };
-  const arrowStyles1 = {
-    top: ".7em",
-    bottom: "auto",
-    padding: ".4em",
-    zIndex: 2,
-  };
+  let btnRef = useRef();
 
   const scaleVariants5 = {
     whileInView: {
@@ -76,13 +77,13 @@ const Classify = (props) => {
   useEffect(() => {
     if (fakeSel) {
       //router.push("#footer")
-  
+
       // location.href = "#footer";
       //  var elem = document.getElementById("footer");
       //    elem.scrollIntoView();
-     location.href = "#footer";
+      location.href = "#footer";
     }
-  
+
     if (!fakeSel) {
       // router.push("#header")
       //  var elem = document.getElementById("header");
@@ -92,26 +93,13 @@ const Classify = (props) => {
     }
   }, [fakeSel]);
 
-
-
-
-  // function navigate() {
-  //   setNavi(false)
-  //   setTimeout(testFun(), 2000);
-  // }
-
-  // function testFun() {
-
-  //   setNavi(true)
-  // }
-
   function delay(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  if(success){
-    delay(100).then(() => (location.href = "/Thanks"));
-  }
+  // if (success) {
+  // //  delay(100).then(() => (location.href = "/Thanks"));
+  // }
 
   function Loader() {
     setSelected("");
@@ -121,19 +109,29 @@ const Classify = (props) => {
     delay(500).then(() => setIsLoading(false));
   }
 
+  function setupConsoleCallback(callback) {
+    console.log("Setting up callback");
+    setInterval(callback, 1000);
+  }
+
   function handleChange(selectedIndex) {
-    console.log("handleSubmit");
+    console.log("s I :", selectedIndex);
+
     var newImageArray = images.filter(function (el, index) {
       return index + 1 == selectedIndex;
     });
 
-    let imP = newImageArray[0].asset;
+    console.log('newImageArray : ',newImageArray)
+
+    let imP = newImageArray[0].image.asset;
     let imI = selectedIndex;
-    setImage(imP);
-    setId(imI);
+    let imN = newImageArray[0].imageName;
+    // setImage(imP);
+    // setId(imI);
 
     let reJs = {
       key: imI,
+      imageName: imN,
       image: {
         asset: imP,
       },
@@ -147,31 +145,51 @@ const Classify = (props) => {
     setResultSt((resSt) => [...resSt, reJs]);
   }
 
-  function handleSubmit() {
-    handleChange(totalIm);
-    let date = new Date();
-    var finalJson = {
-      Date: date,
-      FinalSurvey: resSt,
-    };
+  function handleSubmit(event) {
+    let d = new Date();
+    let date = d.toString();
+    handleChange(totalIm)
+    if (!callbackSetup) {
+      setupConsoleCallback(() => {
+        var finalJson = {
+          Date: date,
+          FinalSurvey: stateRef.current,
+        };
 
-    setFinalRes(finalJson);
-    submitSurvey(finalJson);
-  }
+        setFinalRes(finalJson);
 
-  function submitSurvey(payload) {
+        localStorage.setItem('finalRes', JSON.stringify(finalJson));
 
-    fetch("/api/submitSurvey", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    })
-      .then(() => {
-        setSuccess(true);
-      })
-      .catch((err) => {
-        console.log(err);
+        setCallbackSetup(true);  
+        
+        //submitSurvey(finalJson);
+        delay(100).then(() => (location.href = "/Loader"));
       });
+    }
+
+    // setFinalRes({
+    //   Date: date,
+    //   FinalSurvey: stateRef.current,
+    // });
+    // console.log('fj',finalJson);
+
+    //submitSurvey(finalJson);
   }
+
+  
+
+  // function submitSurvey(payload) {
+  //   fetch("/api/submitSurvey", {
+  //     method: "POST",
+  //     body: JSON.stringify(payload),
+  //   })
+  //     .then(() => {
+  //       setSuccess(true);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
 
   console.log("Final Array ", resSt);
 
@@ -221,7 +239,7 @@ const Classify = (props) => {
                   }
                 >
                   <div className="flex h-14 w-32 ml-6 space-x-4 justify-center items-center transition-transform duration-500 ease-in-out group-hover:scale-105">
-                    <p className=" tracking-[0.2rem] text-[1.3rem]">Next</p>
+                    <p className=" tracking-[0.15rem] text-[1.3rem]">Submit</p>
                     <PaperAirplaneIcon className="h-7 w-7 animate-pulse rotate-90 hover:text-darkBgLight" />
                   </div>
                 </motion.div>
@@ -253,7 +271,7 @@ const Classify = (props) => {
               <img
                 className="h-[29rem] object-contain border-r-4"
                 id={image._id}
-                src={urlFor(image.asset).url()}
+                src={urlFor(image.image.asset).url()}
               ></img>
             </div>
           ))}
@@ -314,8 +332,10 @@ const Classify = (props) => {
         </motion.a>
 
         <motion.button
-          disabled={currentIt != totalIm}
-          onClick={currentIt == totalIm ? handleSubmit :undefined}
+          id="submit"
+          ref={btnRef}
+          disabled={disable || currentIt != totalIm}
+          onClick={currentIt == totalIm ? handleSubmit : undefined}
           // href={currentIt != totalIm ? "#" : "/Thanks"}
           whileTap={{ scale: 0.9 }}
           className={
@@ -324,7 +344,7 @@ const Classify = (props) => {
               : "mt-8 flex cursor-pointer justify-center rounded-[0.2rem] space-x-5 transition duration-500 ease-in-out lg:px-8 py-4 font-ubuntu text-lg font-semibold shadow-md text-white bg-gray-800  shadow-gray-800  lg:hover:bg-green-400 lg:hover:text-darkBgLight"
           }
         >
-          <p className="tracking-wider">Submit</p>
+          <p className="tracking-wider">Finish</p>
           <CheckCircleIcon
             className={
               currentIt != totalIm
